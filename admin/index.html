@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-auth.js"></script>
+
+    <h1>LOGIN</h1>
+    <input type="text" name="phone" id="phone">
+    <input type="text" name="otp" id="otp">
+    <button id="sign-in-button" onclick="sendotp()">SEND OTP</button>
+    <button onclick="verifyotp()">VERIFY OTP</button>
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyCKg4byN3t3YTVGOYGZ4xkzSCBAkiQK-XI",
+            authDomain: "om-thakkar.firebaseapp.com",
+            databaseURL: "https://om-thakkar.firebaseio.com",
+            projectId: "om-thakkar",
+            storageBucket: "om-thakkar.appspot.com",
+            messagingSenderId: "361713121302",
+            appId: "1:361713121302:web:c2f7dd274abc81d2"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.auth().useDeviceLanguage();
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('sign-in-button', {
+            'size': 'invisible',
+            'callback': function (response) {
+                // reCAPTCHA solved, allow signInWithPhoneNumber.
+                onSignInSubmit();
+            }
+        });
+        function sendotp() {
+            var phoneNumber = document.getElementById("phone").value;
+            var appVerifier = window.recaptchaVerifier;
+
+            firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
+                .then(function (confirmationResult) {
+                    // SMS sent. Prompt user to type the code from the message, then sign the
+                    // user in with confirmationResult.confirm(code).
+                    window.confirmationResult = confirmationResult;
+                    var code = document.getElementById("otp").value;
+            confirmationResult.confirm(code).then(function (result) {
+                // User signed in successfully.
+                var user = result.user;
+                console.log(user)
+                // ...
+            }).catch(function (error) {
+                // User couldn't sign in (bad verification code?)
+                // ...
+            });
+                }).catch(function (error) {
+                    // Error; SMS not sent
+                    // ...
+                });
+
+        }
+
+    </script>
+</body>
+
+</html>
