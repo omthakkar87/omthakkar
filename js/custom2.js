@@ -107,102 +107,24 @@ $(window).on("load", function () {
       e.preventDefault(), $("body,html").animate({ scrollTop: 0 }, 400);
     });
 });
-const { Client, Databases, ID, Storage } = Appwrite;
-const client = new Client();
-
-client.setEndpoint("https://cloud.appwrite.io/v1").setProject("om-thakkar");
-
-const databases = new Databases(client);
-const storage = new Storage(client);
-document.getElementById("contact-form").addEventListener("submit", (e) => {
-  e.preventDefault();
-  var name = document.getElementById("InputName").value;
-  var email = document.getElementById("InputEmail").value;
-  var subject = document.getElementById("InputSubject").value;
-  var message = document.getElementById("InputMessage").value;
-  var now = Date.now();
-  var promise = databases
-    .createDocument(
-      "64ed6813e84cc10b7b85",
-      "64ed682f57f2fb37bd39",
-      ID.unique(),
-      {
-        name,
-        email,
-        subject,
-        message,
-      }
-    )
-    .then(
-      function (response) {
-        console.log(response);
-        alert("Message Sent!!!");
-        window.location.reload();
-      },
-      function (error) {
-        console.log(error);
-      }
-    );
-  /*
-  firebase
-    .database()
-    .ref("contacts/" + now)
-    .set({
-      name,
-      email,
-      subject,
-      message,
-    })
-    .then(() => {
-      alert("Message Sent!!!");
-      window.location.reload();
-    });
-    */
-});
 
 window.onload = (event) => {
-
-  const promise = storage.listFiles("64ed6bba9d068b99b356");
-
-  promise.then(
-    function (response) {
-      response.files.forEach(file => {
-        createImage(storage.getFilePreview("64ed6bba9d068b99b356", file.$id))
-        console.log(file.$id);
-      });
-      console.log("RESPONSE",response); // Success
-    },
-    function (error) {
-      console.log(error); // Failure
-    }
-  );
-  /*
-  const promise2 = storage.getFileView("64ed6bba9d068b99b356", "[FILE_ID]");
-
-  promise2.then(
-    function (response) {
-      console.log(response); // Success
-    },
-    function (error) {
-      console.log(error); // Failure
-    }
-  );
   firebase
     .firestore()
     .collection("portfolio")
     .get()
     .then((docs) => {
       docs.forEach((doc) => {
-        createImage(doc.data().image);
+        createImage(doc.data().image)
         console.log(doc.data());
       });
     })
     .catch((error) => {
       console.log(error);
     });
-    */
   console.log("page is fully loaded");
 };
+
 
 var modal = document.getElementById("myModal");
 // When the user clicks on <span> (x), close the modal
@@ -220,8 +142,6 @@ function createImage(image) {
   var box = document.getElementById("box");
   var modal = document.getElementById("myModal");
   img.classList.add("portimage");
-  img.width = 300;
-  img.height = 200;
   img.src = image;
   box.appendChild(img);
   img.onclick = function () {
